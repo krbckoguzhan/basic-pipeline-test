@@ -31,4 +31,24 @@ jobs:
         run: npm run build
 
       - name: Build Docker Image
-        run: docker build -t basic-pipeline-test:latest .
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/basic-pipeline-test:${{ github.sha }} .
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Push Docker Image to Docker Hub
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/basic-pipeline-test:${{ github.sha }}
+
+      - name: Set up Kubectl
+        uses: azure/k8s-set-context@v3
+        with:
+          method: kubeconfig
+          kubeconfig: ${{ secrets.KUBE_CONFIG }}
+
+      - name: Deploy to Kubernetes
+        run: |
+          kubectl set image deployment/basic-pipeline-test-deployment basic-pipeline-test=${{ secrets.DOCKER_USERNAME }}/basic-pipeline-test:${{ github.sha }}
+          # Ek olarak deployment apply da yapılabilir ama set image yeterlidir.
