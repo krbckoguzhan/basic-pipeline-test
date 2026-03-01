@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: basic-pipeline-test-deployment
+  labels:
+    app: basic-pipeline-test
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: basic-pipeline-test
+  template:
+    metadata:
+      labels:
+        app: basic-pipeline-test
+    spec:
+      containers:
+      - name: basic-pipeline-test
+        image: basic-pipeline-test:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 3000
