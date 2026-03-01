@@ -18,7 +18,7 @@ app.get('/', (req, res) => {
 });
 
 if (require.main === module) {
-  app.listen(3000, () => logger.info('Sunucu 3000 portunda ayakta.'));
+  app.listen(3000, () => logger.info('Sunucu 3000 portunda ayakta. yeni image oluşturuldu.'));
 }
 
 module.exports = app;
